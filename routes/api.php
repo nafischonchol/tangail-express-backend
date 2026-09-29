@@ -1,13 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Customer\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
-    return response()->json([
-        'success' => true,
-        'message' => 'Tangail Express API is healthy',
-    ]);
+    return responseSuccess(['status' => 'healthy'], 'Tangail Express API is healthy');
 });
 
 Route::get('/orders', [OrderController::class, 'index']);

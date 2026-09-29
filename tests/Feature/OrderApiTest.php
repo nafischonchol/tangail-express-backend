@@ -29,7 +29,7 @@ class OrderApiTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'message',
-                'errors' => ['customer_name', 'phone', 'address'],
+                'error' => ['customer_name', 'phone', 'address'],
             ]);
     }
 
@@ -44,7 +44,7 @@ class OrderApiTest extends TestCase
         $response->assertStatus(422)
             ->assertJson([
                 'success' => false,
-                'message' => 'দয়া করে বাজারের লিস্ট লিখুন, ছবি দিন অথবা ভয়েস রেকর্ড করুন।',
+                'message' => 'প্রয়োজনীয় তথ্য সঠিকভাবে পূরণ করুন।',
             ]);
     }
 
@@ -73,7 +73,7 @@ class OrderApiTest extends TestCase
 
     public function test_can_create_order_with_image_upload(): void
     {
-        Storage::fake('public');
+        Storage::fake();
 
         $file = UploadedFile::fake()->image('bazar_list.jpg', 600, 800);
 
@@ -89,12 +89,12 @@ class OrderApiTest extends TestCase
 
         $order = Order::first();
         $this->assertNotNull($order->image_list_path);
-        Storage::disk('public')->assertExists($order->image_list_path);
+        Storage::assertExists($order->image_list_path);
     }
 
     public function test_can_create_order_with_voice_recording(): void
     {
-        Storage::fake('public');
+        Storage::fake();
 
         $audioFile = UploadedFile::fake()->create('voice_note.webm', 500, 'audio/webm');
 
@@ -110,6 +110,6 @@ class OrderApiTest extends TestCase
 
         $order = Order::first();
         $this->assertNotNull($order->voice_list_path);
-        Storage::disk('public')->assertExists($order->voice_list_path);
+        Storage::assertExists($order->voice_list_path);
     }
 }

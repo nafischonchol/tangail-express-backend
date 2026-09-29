@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Order extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'customer_name',
         'phone',
@@ -23,9 +21,13 @@ class Order extends Model
         'admin_notes',
     ];
 
-    protected $casts = [
-        'total_amount' => 'decimal:2',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'total_amount' => 'decimal:2',
+            'status' => OrderStatus::class,
+        ];
+    }
 
     protected $appends = [
         'image_url',
@@ -39,19 +41,19 @@ class Order extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image_list_path) {
+        if (! $this->image_list_path) {
             return null;
         }
 
-        return Storage::disk('public')->url($this->image_list_path);
+        return Storage::url($this->image_list_path);
     }
 
     public function getVoiceUrlAttribute(): ?string
     {
-        if (!$this->voice_list_path) {
+        if (! $this->voice_list_path) {
             return null;
         }
 
-        return Storage::disk('public')->url($this->voice_list_path);
+        return Storage::url($this->voice_list_path);
     }
 }
